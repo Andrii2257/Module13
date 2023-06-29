@@ -3,10 +3,7 @@ package hw1;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import hw1.models.CommentEntity;
-import hw1.models.PostEntity;
-import hw1.models.ToDoEntity;
-import hw1.models.UserEntity;
+import hw1.models.*;
 import org.jsoup.Jsoup;
 //import org.example.models.UserEntity;
 
@@ -34,6 +31,10 @@ public class UserCrudApp {
      * @return The created user entity.
      */
     public static UserEntity createUser() {
+        GeoEntity geo = new GeoEntity("62.5342", "-68.6102");
+        AddressEntity address =new AddressEntity("Skiles Walks", "Suite 593", "Kyiv", "72938-1245",geo);
+        UserEntity user = new UserEntity("Ragnarok Lothbrok", "ukConquerent", "letters@myemail.net", address);
+
         try {
             URL url = new URL(BASE_URL + "/users");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -41,7 +42,8 @@ public class UserCrudApp {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            String requestBody = "{\"name\":\"Ragnar Lothbrok\",\"username\":\"frenchConquerent\",\"email\":\"rlothbrok@example.com\"}";
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String requestBody = gson.toJson(user);
 
             try (OutputStream outputStream = connection.getOutputStream()) {
                 outputStream.write(requestBody.getBytes());
@@ -66,6 +68,10 @@ public class UserCrudApp {
      * @return The updated user entity.
      */
     public static UserEntity updateUser(int id) {
+        GeoEntity geo = new GeoEntity("62.5342", "-68.6102");
+        AddressEntity address =new AddressEntity("Skiles Walks", "Suite 593", "Kyiv", "72938-1245",geo);
+        UserEntity user = new UserEntity("Ragnarok Ironside", "ironside", "ragnarsson@myemail.net", address);
+
         try {
             URL url = new URL(BASE_URL + "/users/" + id);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -73,7 +79,8 @@ public class UserCrudApp {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            String requestBody = "{\"id\":5,\"name\":\"Bjorn Ironside\",\"username\":\"ironside\",\"email\":\"ragnarsson@example.com\"}";
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String requestBody = gson.toJson(user);
 
             try (OutputStream outputStream = connection.getOutputStream()) {
                 outputStream.write(requestBody.getBytes());
@@ -270,8 +277,8 @@ public class UserCrudApp {
         Type todosListType = TypeToken
                 .getParameterized(List.class, ToDoEntity.class)
                 .getType();
-        List<ToDoEntity> posts = new GsonBuilder().create().fromJson(json, todosListType);
-        return posts.stream()
+        List<ToDoEntity> todos = new GsonBuilder().create().fromJson(json, todosListType);
+        return todos.stream()
                 .filter(p->!p.isCompleted())
                 .toList();
     }

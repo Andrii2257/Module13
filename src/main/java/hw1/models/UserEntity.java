@@ -7,8 +7,7 @@ public class UserEntity {
     private String email;
     private AddressEntity address;
 
-    public UserEntity(int id, String name, String username, String email, AddressEntity address) {
-        this.id = id;
+    public UserEntity(String name, String username, String email, AddressEntity address) {
         this.name = name;
         this.username = username;
         this.email = email;
